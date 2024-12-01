@@ -17,6 +17,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
+use Filament\Navigation\MenuItem;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -50,6 +53,15 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+            ])
+            ->plugins([
+                FilamentEditProfilePlugin::make()->setIcon('heroicon-s-user-circle')->shouldShowAvatarForm(),
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Edit Profil')
+                    ->url(fn (): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-o-cog-6-tooth')
             ])
             ->authMiddleware([
                 Authenticate::class,
