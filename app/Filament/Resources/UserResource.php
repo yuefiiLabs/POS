@@ -24,8 +24,15 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\FileUpload::make('avatar_url')->image()->label('Avatar')->Avatar(),
                 Forms\Components\TextInput::make('name')->required()->minLength(3),
                 Forms\Components\TextInput::make('email')->required()->email()->unique(ignoreRecord: true),
+                Forms\Components\TextInput::make('password')
+                    ->password()
+                    ->revealable()
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $context): bool => $context === 'create')
+                    ->minLength(6),
                 Forms\Components\Select::make('role')->options([
                     'admin' => 'Admin',
                     'kasir' => 'Kasir',
