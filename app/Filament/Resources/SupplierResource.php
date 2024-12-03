@@ -20,21 +20,25 @@ class SupplierResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $label = 'Data Supplier';
 
+    public static function getForm(){
+        return [
+            Forms\Components\TextInput::make('nama')
+                ->required()
+                ->minLength(3)
+                ->label('Nama Kontak'),
+            Forms\Components\TextInput::make('email')
+                ->email(),
+            Forms\Components\TextInput::make('no_hp')
+                ->label('No Handphone'),
+            Forms\Components\Textarea::make('alamat')
+                ->columnSpanFull(),
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->minLength(3)
-                    ->label('Nama Kontak'),
-                Forms\Components\TextInput::make('email')
-                    ->email(),
-                Forms\Components\TextInput::make('no_hp')
-                    ->label('No Handphone'),
-                Forms\Components\Textarea::make('alamat')
-                    ->columnSpanFull(),
-            ]);
+            ->schema(self::getForm());
     }
 
     public static function table(Table $table): Table

@@ -26,6 +26,7 @@ class BarangResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('kode')->required()->minLength(5)->label('Kode Barang'),
                 Forms\Components\TextInput::make('nama')->required()->minLength(3)->label('Nama Barang'),
+                Forms\Components\TextInput::make('harga')->required()->label('Harga Barang'),
                 Forms\Components\TextInput::make('stok')->label('Stok Awal')->disabledOn('edit'),
                 Forms\Components\Select::make('satuan')->options(['pcs'=>'Pcs', 'lusin'=> 'Lusin']),
             ]);
@@ -35,8 +36,9 @@ class BarangResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('kode')->searchable(),
-                Tables\Columns\TextColumn::make('nama')->searchable(),
+                Tables\Columns\TextColumn::make('kode')->label('Kode Barang')->searchable(),
+                Tables\Columns\TextColumn::make('nama')->label('Nama Barang')->searchable(),
+                Tables\Columns\TextColumn::make('harga')->label('Harga Barang')->searchable(),
                 Tables\Columns\TextColumn::make('stok')->searchable(),
                 Tables\Columns\TextColumn::make('satuan'),
             ])
