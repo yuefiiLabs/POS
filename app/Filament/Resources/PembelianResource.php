@@ -53,7 +53,13 @@ class PembelianResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('supplier.nama')
+                    ->label('Nama Supplier'),
+                Tables\Columns\TextColumn::make('supplier.email')
+                    ->label('Email Supplier'),
+                Tables\Columns\TextColumn::make('tanggal')
+                    ->label('Tanggal Pembelian')
+                    ->dateTime('d F Y'),
             ])
             ->filters([
                 //

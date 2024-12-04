@@ -8,6 +8,7 @@ use App\Models\PembelianItem;
 use Filament\Forms;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -55,16 +56,29 @@ class PembelianItemResource extends Resource
                         ->required()
                         ->options(\App\Models\Barang::all()->pluck('nama', 'id'))
                         ->reactive()
-                        ->afterStateUpdated(function ($state, Set $set) {
+                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             $barang = \App\Models\Barang::find($state);
                             $set('harga', $barang->harga ?? null);
+                            $jumlah = $get('jumlah');
+                            $total = $jumlah * $barang->harga;
+                            $set('total', $total);
                         }),
                     Forms\Components\TextInput::make('jumlah')
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                            $jumlah = $state;
+                            $harga = $get('harga');
+                            $total = $jumlah * $harga;
+                            $set('total', $total);
+                        })
                         ->label('Jumlah Barang'),
                     Forms\Components\TextInput::make('harga')
                         ->label('Harga Barang')
                         ->readonly(),
-                ])->columns(3),
+                    Forms\Components\TextInput::make('total')
+                        ->label('Total Harga')
+                        ->disabled(),
+                ])->columns(4),
                 Forms\Components\Hidden::make('pembelian_id')
                     ->default(request('pembelian_id'))
             ]);
@@ -75,7 +89,21 @@ class PembelianItemResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('barang.nama')
+                    ->label('Nama Barang')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('jumlah')
+                    ->label('Jumlah Barang'),
+                Tables\Columns\TextColumn::make('harga')
+                    ->label('Harga Barang')
+                    ->money('IDR')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('total')
+                    ->label('Total Harga')
+                    ->money('IDR')
+                    ->getStateUsing(function ($record) {
+                        return $record->jumlah * $record->harga;
+                    })
             ])
             ->filters([
                 //

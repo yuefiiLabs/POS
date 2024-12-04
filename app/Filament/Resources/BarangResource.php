@@ -24,11 +24,22 @@ class BarangResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('kode')->required()->minLength(5)->label('Kode Barang'),
-                Forms\Components\TextInput::make('nama')->required()->minLength(3)->label('Nama Barang'),
-                Forms\Components\TextInput::make('harga')->required()->label('Harga Barang'),
-                Forms\Components\TextInput::make('stok')->label('Stok Awal')->disabledOn('edit'),
-                Forms\Components\Select::make('satuan')->options(['pcs'=>'Pcs', 'lusin'=> 'Lusin']),
+                Forms\Components\TextInput::make('kode')
+                    ->required()
+                    ->minLength(5)
+                    ->label('Kode Barang'),
+                Forms\Components\TextInput::make('nama')
+                    ->required()
+                    ->minLength(3)
+                    ->label('Nama Barang'),
+                Forms\Components\TextInput::make('harga')
+                    ->required()
+                    ->label('Harga Barang'),
+                Forms\Components\TextInput::make('stok')
+                    ->label('Stok Awal')
+                    ->disabledOn('edit'),
+                Forms\Components\Select::make('satuan')
+                    ->options(['pcs'=>'Pcs', 'lusin'=> 'Lusin']),
             ]);
     }
 
@@ -36,10 +47,18 @@ class BarangResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('kode')->label('Kode Barang')->searchable(),
-                Tables\Columns\TextColumn::make('nama')->label('Nama Barang')->searchable(),
-                Tables\Columns\TextColumn::make('harga')->label('Harga Barang')->searchable(),
-                Tables\Columns\TextColumn::make('stok')->searchable(),
+                Tables\Columns\TextColumn::make('kode')
+                    ->label('Kode Barang')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('nama')
+                    ->label('Nama Barang')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('harga')
+                    ->label('Harga Barang')
+                    ->money('IDR')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('stok')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('satuan'),
             ])
             ->filters([
@@ -47,6 +66,7 @@ class BarangResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
