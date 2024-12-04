@@ -36,15 +36,15 @@ class PembelianItemResource extends Resource
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('supplier_id')
                     ->label('Supplier')
-                    ->required()
+                    ->required() 
                     ->disabled()
                     ->default($pembelian->supplier?->nama),
-                Forms\Components\TextInput::make('supplier_id')
-                    ->label('Supplier')
+                Forms\Components\TextInput::make('supplier_email')
+                    ->label('Email Supplier')
                     ->required()
                     ->email()
                     ->disabled()
-                    ->default($pembelian->supplier?->email),
+                    ->default($pembelian->supplier?->email ?? ''),
                 Forms\Components\Select::make('barang_id')
                     ->label('Barang')
                     ->required()
