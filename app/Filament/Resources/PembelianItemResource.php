@@ -6,13 +6,14 @@ use App\Filament\Resources\PembelianItemResource\Pages;
 use App\Filament\Resources\PembelianItemResource\RelationManagers;
 use App\Models\PembelianItem;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Set;
 
 class PembelianItemResource extends Resource
 {
@@ -27,42 +28,48 @@ class PembelianItemResource extends Resource
             $pembelian = \App\Models\Pembelian::find(request('pembelian_id'));
         }
         return $form
-            ->schema([
-                Forms\Components\DatePicker::make('tanggal')
-                    ->label('Tanggal Pembelian')
-                    ->required()
-                    ->default($pembelian->tanggal)
-                    ->disabled()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('supplier_id')
-                    ->label('Supplier')
-                    ->required() 
-                    ->disabled()
-                    ->default($pembelian->supplier?->nama),
-                Forms\Components\TextInput::make('supplier_email')
-                    ->label('Email Supplier')
-                    ->required()
-                    ->email()
-                    ->disabled()
-                    ->default($pembelian->supplier?->email ?? ''),
-                Forms\Components\Select::make('barang_id')
-                    ->label('Barang')
-                    ->required()
-                    ->options(\App\Models\Barang::all()->pluck('nama', 'id'))
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, Set $set) {
-                        $barang = \App\Models\Barang::find($state);
-                        $set('harga', $barang->harga ?? null);
-                    }),
-                Forms\Components\TextInput::make('jumlah')
-                    ->label('Jumlah Barang'),
-                Forms\Components\TextInput::make('harga')
-                    ->label('Harga Barang')
-                    ->disabled(),
+            ->schema([  
+                Grid::make()
+                ->schema([
+                    Forms\Components\DatePicker::make('tanggal')
+                        ->label('Tanggal Pembelian')
+                        ->required()
+                        ->default($pembelian->tanggal)
+                        ->disabled(),
+                    Forms\Components\TextInput::make('supplier_id')
+                        ->label('Supplier')
+                        ->required() 
+                        ->disabled()
+                        ->default($pembelian->supplier?->nama),
+                    Forms\Components\TextInput::make('supplier_email')
+                        ->label('Email Supplier')
+                        ->required()
+                        ->email()
+                        ->disabled()
+                        ->default($pembelian->supplier?->email ?? ''),
+                ])->columns(3),
+                Grid::make()
+                ->schema([
+                    Forms\Components\Select::make('barang_id')
+                        ->label('Barang')
+                        ->required()
+                        ->options(\App\Models\Barang::all()->pluck('nama', 'id'))
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, Set $set) {
+                            $barang = \App\Models\Barang::find($state);
+                            $set('harga', $barang->harga ?? null);
+                        }),
+                    Forms\Components\TextInput::make('jumlah')
+                        ->label('Jumlah Barang'),
+                    Forms\Components\TextInput::make('harga')
+                        ->label('Harga Barang')
+                        ->readonly(),
+                ])->columns(3),
                 Forms\Components\Hidden::make('pembelian_id')
                     ->default(request('pembelian_id'))
             ]);
     }
+
 
     public static function table(Table $table): Table
     {
